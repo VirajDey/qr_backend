@@ -55,8 +55,9 @@ app.get('/qr/:shortId', async (req, res) => {
     qrCode.scans += 1;
     await qrCode.save();
 
-    // Redirect to the landing page instead of sending JSON
-    res.redirect(`http://localhost:5173/landing/${req.params.shortId}`);
+    // Use the frontend URL from environment variables
+    const frontendUrl = process.env.FRONTEND_URL || 'https://qr-frontend-neon.vercel.app';
+    res.redirect(`${frontendUrl}/landing/${req.params.shortId}`);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Server error');
