@@ -14,14 +14,17 @@ const app = express();
 // Update CORS configuration to handle multiple origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://qr-frontend-neon.vercel.app'
+  'https://qr-frontend-neon.vercel.app',
+  'https://qr-backend-hsd9.onrender.com'
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) === -1) {
+      console.log('Blocked origin:', origin); // Add logging for debugging
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
@@ -30,7 +33,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Length', 'Content-Type'],
-  credentials: true
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 app.use(express.json());
